@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import cartModel from '../../dao/models/cart.model.js';
 import productModel from '../../dao/models/product.model.js';
-const HARDCODED_CART_ID = '664796896b11e830d303ac64';
+const HARDCODED_CART_ID = '66620cdf469ef1dd89e6a3cb';
 
 const router = Router();
 
