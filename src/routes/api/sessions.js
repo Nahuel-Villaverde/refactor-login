@@ -8,12 +8,12 @@ router.post('/register', passport.authenticate('register', { failureRedirect: 'f
 });
 
 router.get('/failregister', async (req, res) => {
-    console.log("Estrategia fallida")
-    res.send({ error: "Falló" })
-})
+    console.log("Estrategia fallida");
+    res.send({ error: "Falló" });
+});
 
 router.post('/login', passport.authenticate('login', { failureRedirect: 'faillogin' }), async (req, res) => {
-    if (!req.user) return res.status(400).send({ status: "error", error: "Datos incompletos" })
+    if (!req.user) return res.status(400).send({ status: "error", error: "Datos incompletos" });
     try {
         req.session.user = {
             first_name: req.user.first_name,
@@ -21,17 +21,16 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'faillog
             email: req.user.email,
             age: req.user.age,
         };
-        console.log(req.session.user)
+        console.log(req.session.user);
         res.redirect('/products');
-
     } catch (err) {
         res.status(500).send('Error al iniciar sesión');
     }
 });
 
 router.get('/faillogin', (req, res) => {
-    res.send({ error: "Login fallido" })
-})
+    res.send({ error: "Login fallido" });
+});
 
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
@@ -40,12 +39,18 @@ router.post('/logout', (req, res) => {
     });
 });
 
-router.get("/github", passport.authenticate("github",{scope:["user:email"]}),async(req,res)=>{})
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => {});
 
+router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), async (req, res) => {
+    req.session.user = req.user;
+    res.redirect("/products");
+});
 
-router.get("/githubcallback",passport.authenticate("github",{failureRedirect:"/login"}),async(req,res)=>{
-    req.session.user=req.user
-    res.redirect("/products")
-})
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/login" }), async (req, res) => {
+    req.session.user = req.user;
+    res.redirect("/products");
+});
 
 export default router;
