@@ -3,12 +3,7 @@
 <p>Apellido: {{user.last_name}}</p>
 <p>Email: {{user.email}}</p>
 <p>Edad: {{user.age}}</p>
-
-{{#if user.isAdmin}}
-    <h2>Rol: administrador</h2>
-{{else}}
-    <h2>Rol: usuario</h2>
-{{/if}}
+<h2>Rol: {{user.role}}</h2>
 
 <form action="/api/sessions/logout" method="POST">
     <button type="submit">Cerrar Sesión</button>
@@ -18,7 +13,7 @@
 
 {{#if products.length}}
 <div>
-    <a href="/carts/{{cartId}}" class="btn">Ver Carrito</a>
+    <a href="/carts/{{user.cartId}}" class="btn">Ver Carrito</a>
     {{#each products}}
     <div>
         <h3><a href="/products/{{this._id}}">{{this.titulo}}</a></h3>

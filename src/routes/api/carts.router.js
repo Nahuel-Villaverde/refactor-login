@@ -1,7 +1,6 @@
-import { Router } from 'express'
+import { Router } from 'express';
 import cartModel from '../../dao/models/cart.model.js';
 import productModel from '../../dao/models/product.model.js';
-const HARDCODED_CART_ID = '66620cdf469ef1dd89e6a3cb';
 
 const router = Router();
 
@@ -41,7 +40,7 @@ router.get('/:cid', async (req, res) => {
 });
 
 router.post('/:cid/product/:pid', async (req, res) => {
-    const cartId = req.params.cid || HARDCODED_CART_ID;
+    const cartId = req.params.cid; // No es necesario el valor por defecto HARDCODED_CART_ID, ya que usaremos el cartId del usuario autenticado
     const productId = req.params.pid;
 
     try {
@@ -158,4 +157,4 @@ router.delete('/:cid', async (req, res) => {
     }
 });
 
-export default router
+export default router;

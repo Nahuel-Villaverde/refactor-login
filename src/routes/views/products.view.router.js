@@ -1,7 +1,7 @@
-import { Router } from 'express'
+import { Router } from 'express';
 import productModel from '../../dao/models/product.model.js';
-const HARDCODED_CART_ID = '66620cdf469ef1dd89e6a3cb';
-import { isAuthenticated} from '../../middleware/auth.js';
+import userModel from '../../dao/models/user.js';
+import { isAuthenticated } from '../../middleware/auth.js';
 
 const viewRouter = Router();
 
@@ -55,7 +55,11 @@ viewRouter.get('/', async (req, res) => {
             nextLink: nextLink
         });
 
-        res.render('products', { products: result.docs, page, limit, prevLink, nextLink, categoria, sort, disponible, cartId: HARDCODED_CART_ID, user: req.session.user });
+        // Obtener cartId del usuario autenticado
+        const user = await userModel.findById(req.user._id);
+        const cartId = user.cartId;
+
+        res.render('products', { products: result.docs, page, limit, prevLink, nextLink, categoria, sort, disponible, cartId, user: req.session.user });
     } catch (error) {
         console.error('Error al obtener los productos:', error);
         res.status(500).render('error', { error: 'Error al obtener los productos' });
@@ -65,13 +69,17 @@ viewRouter.get('/', async (req, res) => {
 viewRouter.get('/:id', async (req, res) => {
     try {
         const productId = req.params.id;
-        let product = await productModel.findById(productId).lean()
+        let product = await productModel.findById(productId).lean();
 
         if (!product) {
             return res.status(404).render('error', { message: "Producto no encontrado" });
         }
 
-        res.render('detailProducts', { product, cartId: HARDCODED_CART_ID});
+        // Obtener cartId del usuario autenticado
+        const user = await userModel.findById(req.user._id);
+        const cartId = user.cartId;
+
+        res.render('detailProducts', { product, cartId });
     } catch (error) {
         console.error(error);
         res.status(500).render('error', { message: "Error al obtener el producto" });

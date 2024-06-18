@@ -3,6 +3,7 @@ import GitHubStrategy from 'passport-github2';
 import GoogleStrategy from 'passport-google-oauth20';
 import local from 'passport-local';
 import userService from '../dao/models/user.js';
+import cartModel from '../dao/models/cart.model.js'; // Importar el modelo de carrito
 import { createHash, isValidPassword } from '../../utils.js';
 import dotenv from 'dotenv';
 
@@ -25,9 +26,15 @@ const initializePassport = () => {
                     last_name: "",
                     age: 20,
                     email: profile._json.email,
-                    password: ""
+                    password: "",
+                    role: 'user'
                 };
                 let result = await userService.create(newUser);
+
+                const newCart = await cartModel.create({ products: [] });
+                result.cartId = newCart._id;
+                await result.save();
+
                 done(null, result);
             } else {
                 done(null, user);
@@ -50,9 +57,15 @@ const initializePassport = () => {
                     first_name: profile.name.givenName,
                     last_name: profile.name.familyName,
                     email: profile.emails[0].value,
-                    password: ""
+                    password: "",
+                    role: 'user' 
                 };
                 let result = await userService.create(newUser);
+
+                const newCart = await cartModel.create({ products: [] });
+                result.cartId = newCart._id;
+                await result.save();
+
                 done(null, result);
             } else {
                 done(null, user);
@@ -76,9 +89,15 @@ const initializePassport = () => {
                     last_name,
                     email,
                     age,
-                    password: createHash(password)
+                    password: createHash(password),
+                    role: 'user'
                 };
                 let result = await userService.create(newUser);
+                
+                const newCart = await cartModel.create({ products: [] });
+                result.cartId = newCart._id;
+                await result.save();
+
                 return done(null, result);
             } catch (error) {
                 return done("Error al obtener el usuario" + error);

@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     age: Number,
     password: String,
+    role: { type: String, default: "user" },
+    cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Carritos' } // Nuevo campo para el ID del carrito
 });
 
 const User = mongoose.model(userCollection, userSchema);

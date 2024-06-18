@@ -1,9 +1,10 @@
 <div>
     <h1>Productos en el carrito</h1>
+    <h2>Carrito ID: {{cartId}}</h2>
     <ul>
         {{#each cart.products}}
         <li>
-            <h2>{{this.id.titulo}}</h2>
+            <h3>{{this.id.titulo}}</h3>
             <p>Descripción: {{this.id.descripcion}}</p>
             <p>Precio: {{this.id.precio}}</p>
             <p>Thumbnail: {{this.id.thumbnail}}</p>
@@ -12,17 +13,15 @@
             <p>Stock: {{this.id.stock}}</p>
             <p>Disponible: {{this.id.disponible}}</p>
             <p>Cantidad: {{this.quantity}}</p>
-            <button onclick="removeProduct('{{this.id._id}}')">Eliminar producto</button>
+            <button onclick="removeProduct('{{this.id._id}}', '{{../cartId}}')">Eliminar producto</button>
         </li>
         {{/each}}
     </ul>
-    <button onclick="clearCart()">Eliminar todos los productos del carrito</button>
+    <button onclick="clearCart('{{cartId}}')">Eliminar todos los productos del carrito</button>
 </div>
 
 <script>
-    async function clearCart() {
-        const cartId = '66620cdf469ef1dd89e6a3cb';
-
+    async function clearCart(cartId) {
         try {
             const response = await fetch(`/api/carts/${cartId}`, {
                 method: 'DELETE',
@@ -42,8 +41,7 @@
         }
     }
 
-    async function removeProduct(productId) {
-        const cartId = '66620cdf469ef1dd89e6a3cb';
+    async function removeProduct(productId, cartId) {
         console.log(`Cart ID: ${cartId}, Product ID: ${productId}`);
         try {
             const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
