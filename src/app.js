@@ -5,9 +5,9 @@ import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
-import cartApiRouter from './routes/api/carts.router.js';
-import productApiRouter from './routes/api/products.router.js';
-import viewRouterProduct from './routes/views/products.view.router.js';
+import cartRouter from './routes/api/carts.router.js';
+import productRouter from './routes/api/products.router.js';
+import productsViewRouter from './routes/views/products.view.router.js';
 import viewRouterCart from './routes/views/carts.view.router.js';
 import sessionsRouter from './routes/api/sessions.js';
 import viewsRouter from './routes/views/views.js';
@@ -53,12 +53,13 @@ mongoose.connect(MONGO_URL)
 .then(() => { console.log("Conectado a la base de datos") })
 .catch(error => console.error("Error en la conexión", error));
 
-app.use('/api/carts', cartApiRouter);
-app.use('/api/products', productApiRouter);
-app.use('/products', viewRouterProduct);
+app.use('/api/carts', cartRouter);
+app.use('/api/products', productRouter);
+app.use('/products', productsViewRouter);
 app.use('/carts', viewRouterCart);
 app.use('/api/sessions', sessionsRouter);
 app.use('/', viewsRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

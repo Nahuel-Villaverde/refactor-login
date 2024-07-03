@@ -4,7 +4,7 @@ import GoogleStrategy from 'passport-google-oauth20';
 import local from 'passport-local';
 import userService from '../dao/models/user.js';
 import cartModel from '../dao/models/cart.model.js'; // Importar el modelo de carrito
-import { createHash, isValidPassword } from '../../utils.js';
+import { createHash, isValidPassword } from '../utils.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
