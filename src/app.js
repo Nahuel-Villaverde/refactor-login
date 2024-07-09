@@ -5,12 +5,12 @@ import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
-import cartRouter from './routes/api/carts.router.js';
-import productRouter from './routes/api/products.router.js';
-import productsViewRouter from './routes/views/products.view.router.js';
-import viewRouterCart from './routes/views/carts.view.router.js';
+import cartRouter from './routes/api/carts.api.js';
+import productRouter from './routes/api/products.api.js';
+import productsViewRouter from './routes/views/products.view.js';
+import viewRouterCart from './routes/views/carts.view.js';
 import sessionsRouter from './routes/api/sessions.js';
-import viewsRouter from './routes/views/views.js';
+import viewsRouter from './routes/views/profile.views.js';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 
