@@ -1,4 +1,4 @@
-import productModel from '../dao/models/product.model.js';
+import ProductRepository from '../repositories/product.repository.js';
 
 export const getProducts = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -23,7 +23,7 @@ export const getProducts = async (req, res) => {
             ordenamiento.precio = -1;
         }
 
-        const result = await productModel.paginate(filtro, { page, limit, lean: true, sort: ordenamiento });
+        const result = await ProductRepository.getProducts(filtro, { page, limit, lean: true, sort: ordenamiento });
 
         const prevLink = result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}&categoria=${categoria || ''}&sort=${sort || ''}${disponible !== undefined ? `&disponible=${disponible}` : ''}` : null;
         const nextLink = result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}&categoria=${categoria || ''}&sort=${sort || ''}${disponible !== undefined ? `&disponible=${disponible}` : ''}` : null;
@@ -49,7 +49,7 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
     try {
         const productId = req.params.id;
-        let product = await productModel.findById(productId);
+        let product = await ProductRepository.getProductById(productId);
 
         if (!product) {
             return res.status(404).send({ result: "error", message: "Producto no encontrado" });
@@ -63,15 +63,15 @@ export const getProductById = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-    let { titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible } = req.body
+    let { titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible } = req.body;
 
     if (!titulo || !descripcion || !precio || !thumbnail || !categoria || !code || stock === undefined || disponible === undefined) {
-        return res.send({ status: "error", error: "Faltan parametros" })
+        return res.send({ status: "error", error: "Faltan parametros" });
     }
 
     try {
-        let result = await productModel.create({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible });
-        res.send({ status: "success", payload: result })
+        let result = await ProductRepository.createProduct({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible });
+        res.send({ status: "success", payload: result });
     } catch (error) {
         console.error('Error al crear producto:', error);
         res.status(500).send({ status: "error", error: "Error al crear producto" });
@@ -87,7 +87,7 @@ export const updateProduct = async (req, res) => {
     }
 
     try {
-        const product = await productModel.findByIdAndUpdate(productId, updatedProduct, { new: true });
+        const product = await ProductRepository.updateProduct(productId, updatedProduct);
 
         if (!product) {
             return res.status(404).send({ result: "error", message: "Producto no encontrado" });
@@ -104,7 +104,7 @@ export const deleteProduct = async (req, res) => {
     const productId = req.params.id;
 
     try {
-        const result = await productModel.findByIdAndDelete(productId);
+        const result = await ProductRepository.deleteProduct(productId);
 
         if (!result) {
             return res.status(404).send({ result: "error", message: "Producto no encontrado" });

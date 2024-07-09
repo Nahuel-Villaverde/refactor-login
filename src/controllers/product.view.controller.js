@@ -1,3 +1,4 @@
+import ProductRepository from '../repositories/product.repository.js';
 import productModel from '../dao/models/product.model.js';
 import userModel from '../dao/models/user.js';
 
@@ -31,7 +32,7 @@ export const renderProducts = async (req, res) => {
         console.log('Objeto de ordenamiento:', ordenamiento);
         console.log('Filtro:', filtro);
 
-        const result = await productModel.paginate(filtro, { page, limit, lean: true, sort: ordenamiento });
+        const result = await ProductRepository.getProducts(filtro, { page, limit,lean:true, sort: ordenamiento });
 
         const prevLink = result.hasPrevPage ? `/products?page=${result.prevPage}&limit=${limit}&categoria=${categoria || ''}&sort=${sort || ''}${disponible !== undefined ? `&disponible=${disponible}` : ''}` : null;
         const nextLink = result.hasNextPage ? `/products?page=${result.nextPage}&limit=${limit}&categoria=${categoria || ''}&sort=${sort || ''}${disponible !== undefined ? `&disponible=${disponible}` : ''}` : null;
@@ -62,7 +63,7 @@ export const renderProducts = async (req, res) => {
 export const renderProductDetail = async (req, res) => {
     try {
         const productId = req.params.id;
-        let product = await productModel.findById(productId).lean();
+        let product = await ProductRepository.getProductById(productId);
 
         if (!product) {
             return res.status(404).render('error', { message: "Producto no encontrado" });
@@ -75,5 +76,44 @@ export const renderProductDetail = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).render('error', { message: "Error al obtener el producto" });
+    }
+};
+
+export const renderEditProductForm = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await ProductRepository.getProductById(productId);
+
+        if (!product) {
+            return res.status(404).render('error', { message: "Producto no encontrado" });
+        }
+
+        const user = await userModel.findById(req.user._id);
+        const cartId = user.cartId;
+
+        res.render('editProduct', { product, cartId });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('error', { message: "Error al obtener el producto" });
+    }
+};
+
+export const renderCreateProductForm = (req, res) => {
+    res.render('createProducts'); // Aquí renderiza el formulario para crear un producto
+};
+
+export const handleCreateProductForm = async (req, res) => {
+    let { titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible } = req.body;
+
+    if (!titulo || !descripcion || !precio || !thumbnail || !categoria || !code || stock === undefined || disponible === undefined) {
+        return res.send({ status: "error", error: "Faltan parametros" });
+    }
+
+    try {
+        let result = await ProductRepository.createProduct({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible });
+        res.redirect('/products'); // Redirige a la lista de productos después de crear uno nuevo
+    } catch (error) {
+        console.error('Error al crear producto:', error);
+        res.status(500).send({ status: "error", error: "Error al crear producto" });
     }
 };

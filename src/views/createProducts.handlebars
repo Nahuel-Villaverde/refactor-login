@@ -1,0 +1,27 @@
+<form action="/api/products" method="POST">
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" required>
+    <br>
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" required></textarea>
+    <br>
+    <label for="precio">Precio:</label>
+    <input type="number" id="precio" name="precio" required>
+    <br>
+    <label for="thumbnail">Thumbnail:</label>
+    <input type="text" id="thumbnail" name="thumbnail" required>
+    <br>
+    <label for="categoria">Categoría:</label>
+    <input type="text" id="categoria" name="categoria" required>
+    <br>
+    <label for="code">Código:</label>
+    <input type="text" id="code" name="code" required>
+    <br>
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock" name="stock" required>
+    <br>
+    <input type="checkbox" name="disponible" id="disponible">
+    <label for="disponible">Disponible</label>
+    <br>
+    <button type="submit">Agregar Producto</button>
+</form>

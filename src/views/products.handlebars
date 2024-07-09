@@ -11,6 +11,8 @@
 
 <br><br><br>
 
+<a href="/products/create" class="btn">Agregar Producto</a>
+
 {{#if products.length}}
 <div>
     <a href="/carts/{{user.cartId}}" class="btn">Ver Carrito</a>
@@ -24,8 +26,15 @@
             <li>Stock: {{this.stock}} </li>
             <li>Disponible: {{this.disponible}} </li>
         </ul>
-        <form id="addToCartForm_{{this._id}}" class="addToCartForm" action="/carts/{{../cartId}}/product/{{this._id}}" method="POST">
+        <form id="addToCartForm_{{this._id}}" class="addToCartForm" action="/carts/{{../cartId}}/product/{{this._id}}"
+            method="POST">
             <button type="submit" onclick="showAlert()">Agregar al carrito</button>
+        </form>
+
+        <button onclick="confirmDelete('{{this._id}}')">Eliminar</button>
+
+        <form action="/products/{{this._id}}/edit" method="GET">
+            <button type="submit">Modificar</button>
         </form>
     </div>
     <br />
@@ -34,14 +43,15 @@
 <br />
 <div>
     {{#if prevLink}}
-    <a href="{{prevLink}}"><< Anterior</a>
-    {{/if}}
-    &nbsp;
-    Página: {{page}}
-    &nbsp;
-    {{#if nextLink}}
-    <a href="{{nextLink}}">Siguiente >></a>
-    {{/if}}
+    <a href="{{prevLink}}">
+        << Anterior</a>
+            {{/if}}
+            &nbsp;
+            Página: {{page}}
+            &nbsp;
+            {{#if nextLink}}
+            <a href="{{nextLink}}">Siguiente >></a>
+            {{/if}}
 </div>
 {{else}}
 <h1>No hay productos para mostrar</h1>
@@ -49,6 +59,30 @@
 
 <script>
     function showAlert() {
-    alert("¡Producto agregado al carrito!");
-}
+        alert("¡Producto agregado al carrito!");
+    }
+
+    function confirmDelete(productId) {
+        if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+            deleteProduct(productId);
+        }
+    }
+
+    async function deleteProduct(productId) {
+        try {
+            const response = await fetch(`/api/products/${productId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Producto eliminado con éxito');
+                window.location.reload();
+            } else {
+                alert('Error al eliminar el producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el producto');
+        }
+    }
 </script>

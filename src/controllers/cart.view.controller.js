@@ -1,10 +1,9 @@
-import cartModel from '../dao/models/cart.model.js';
-import productModel from '../dao/models/product.model.js';
+import CartRepository from '../repositories/cart.repository.js';
 
 export const getCartById = async (req, res) => {
     try {
         const cartId = req.user.cartId; // Usar el cartId del usuario logueado
-        let cart = await cartModel.findById(cartId).populate('products.id').lean();
+        const cart = await CartRepository.getCartById(cartId);
 
         if (!cart) {
             return res.status(404).render('error', { message: "Carrito no encontrado" });
@@ -24,26 +23,8 @@ export const addProductToCart = async (req, res) => {
     const productId = req.params.pid;
 
     try {
-        const cart = await cartModel.findById(cartId);
-        if (!cart) {
-            return res.status(404).json({ error: 'Carrito no encontrado' });
-        }
-
-        const product = await productModel.findById(productId);
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-
-        const productInCart = cart.products.find(product => String(product.id) === productId);
-        console.log(productInCart);
-
-        if (productInCart) {
-            productInCart.quantity++;
-        } else {
-            cart.products.push({ id: productId, quantity: 1 });
-        }
-
-        await cart.save();
+        await CartRepository.addProductToCart(cartId, productId);
+        res.status(200)
     } catch (error) {
         console.error('Error al agregar producto al carrito:', error);
         res.status(500).json({ error: 'Error al agregar producto al carrito' });
