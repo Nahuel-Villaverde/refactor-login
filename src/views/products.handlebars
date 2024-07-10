@@ -11,7 +11,11 @@
 
 <br><br><br>
 
+{{#if (eq user.role 'admin')}}
 <a href="/products/create" class="btn">Agregar Producto</a>
+
+<br><br><br>
+{{/if}}
 
 {{#if products.length}}
 <div>
@@ -26,16 +30,21 @@
             <li>Stock: {{this.stock}} </li>
             <li>Disponible: {{this.disponible}} </li>
         </ul>
+        
+        {{#unless (eq ../user.role 'admin')}}
         <form id="addToCartForm_{{this._id}}" class="addToCartForm" action="/carts/{{../cartId}}/product/{{this._id}}"
             method="POST">
             <button type="submit" onclick="showAlert()">Agregar al carrito</button>
         </form>
+        {{/unless}}
 
+        {{#if (eq ../user.role 'admin')}}
         <button onclick="confirmDelete('{{this._id}}')">Eliminar</button>
 
         <form action="/products/{{this._id}}/edit" method="GET">
             <button type="submit">Modificar</button>
         </form>
+        {{/if}}
     </div>
     <br />
     {{/each}}
@@ -43,15 +52,14 @@
 <br />
 <div>
     {{#if prevLink}}
-    <a href="{{prevLink}}">
-        << Anterior</a>
-            {{/if}}
-            &nbsp;
-            Página: {{page}}
-            &nbsp;
-            {{#if nextLink}}
-            <a href="{{nextLink}}">Siguiente >></a>
-            {{/if}}
+    <a href="{{prevLink}}"><< Anterior</a>
+    {{/if}}
+    &nbsp;
+    Página: {{page}}
+    &nbsp;
+    {{#if nextLink}}
+    <a href="{{nextLink}}">Siguiente >></a>
+    {{/if}}
 </div>
 {{else}}
 <h1>No hay productos para mostrar</h1>

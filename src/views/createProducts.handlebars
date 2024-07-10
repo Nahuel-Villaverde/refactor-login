@@ -1,27 +1,67 @@
-<form action="/api/products" method="POST">
+<h2>Agregar Producto</h2>
+
+<form id="agregarForm">
     <label for="titulo">Título:</label>
     <input type="text" id="titulo" name="titulo" required>
-    <br>
     <label for="descripcion">Descripción:</label>
     <textarea id="descripcion" name="descripcion" required></textarea>
-    <br>
     <label for="precio">Precio:</label>
     <input type="number" id="precio" name="precio" required>
-    <br>
     <label for="thumbnail">Thumbnail:</label>
     <input type="text" id="thumbnail" name="thumbnail" required>
-    <br>
     <label for="categoria">Categoría:</label>
     <input type="text" id="categoria" name="categoria" required>
-    <br>
-    <label for="code">Código:</label>
+    <label for="code">Code:</label>
     <input type="text" id="code" name="code" required>
-    <br>
     <label for="stock">Stock:</label>
     <input type="number" id="stock" name="stock" required>
-    <br>
-    <input type="checkbox" name="disponible" id="disponible">
-    <label for="disponible">Disponible</label>
-    <br>
+    <label for="disponible">Disponible:</label>
+    <input type="checkbox" id="disponible" name="disponible">
     <button type="submit">Agregar Producto</button>
 </form>
+
+<script>
+    document.getElementById('agregarForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const titulo = document.getElementById('titulo').value;
+        const descripcion = document.getElementById('descripcion').value;
+        const precio = document.getElementById('precio').value;
+        const thumbnail = document.getElementById('thumbnail').value;
+        const categoria = document.getElementById('categoria').value;
+        const code = document.getElementById('code').value;
+        const stock = document.getElementById('stock').value;
+        const disponible = document.getElementById('disponible').checked;
+
+        const productData = {
+            titulo,
+            descripcion,
+            precio,
+            thumbnail,
+            categoria,
+            code,
+            stock,
+            disponible
+        };
+
+        try {
+            const response = await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(productData)
+            });
+
+            if (response.ok) {
+                alert('Producto agregado con éxito');
+                window.location.href = '/products'; // Redirigir a la lista de productos
+            } else {
+                alert('Error al agregar el producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al agregar el producto');
+        }
+    });
+</script>
