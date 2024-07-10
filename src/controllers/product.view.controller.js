@@ -99,7 +99,7 @@ export const renderEditProductForm = async (req, res) => {
 };
 
 export const renderCreateProductForm = (req, res) => {
-    res.render('createProducts'); // Aquí renderiza el formulario para crear un producto
+    res.render('createProducts'); 
 };
 
 export const handleCreateProductForm = async (req, res) => {
@@ -111,7 +111,7 @@ export const handleCreateProductForm = async (req, res) => {
 
     try {
         let result = await ProductRepository.createProduct({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible });
-        res.redirect('/products'); // Redirige a la lista de productos después de crear uno nuevo
+        res.redirect('/products'); 
     } catch (error) {
         console.error('Error al crear producto:', error);
         res.status(500).send({ status: "error", error: "Error al crear producto" });

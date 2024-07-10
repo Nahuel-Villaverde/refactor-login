@@ -2,7 +2,7 @@ import CartRepository from '../repositories/cart.repository.js';
 
 export const getCartById = async (req, res) => {
     try {
-        const cartId = req.user.cartId; // Usar el cartId del usuario logueado
+        const cartId = req.user.cartId;
         const cart = await CartRepository.getCartById(cartId);
 
         if (!cart) {
@@ -19,7 +19,7 @@ export const getCartById = async (req, res) => {
 };
 
 export const addProductToCart = async (req, res) => {
-    const cartId = req.params.cid || req.user.cartId; // Usar el cartId del usuario logueado
+    const cartId = req.params.cid || req.user.cartId;
     const productId = req.params.pid;
 
     try {
