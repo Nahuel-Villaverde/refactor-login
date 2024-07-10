@@ -12,7 +12,8 @@ viewRouter.get('/', renderProducts);
 viewRouter.get('/create', isAdmin, renderCreateProductForm);
 viewRouter.post('/create', isAdmin, handleCreateProductForm);
 
-viewRouter.get('/:id', isAdmin, renderProductDetail);
+viewRouter.get('/:id', renderProductDetail);
+
 viewRouter.get('/:id/edit', isAdmin, renderEditProductForm);
 
 export default viewRouter;

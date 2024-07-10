@@ -17,6 +17,10 @@
 <br><br><br>
 {{/if}}
 
+<a href="/messages">
+    <button type="button">Ir al chat</button>
+</a>
+
 {{#if products.length}}
 <div>
     <a href="/carts/{{user.cartId}}" class="btn">Ver Carrito</a>
@@ -30,12 +34,16 @@
             <li>Stock: {{this.stock}} </li>
             <li>Disponible: {{this.disponible}} </li>
         </ul>
-        
+
         {{#unless (eq ../user.role 'admin')}}
+        {{#if this.disponible}}
         <form id="addToCartForm_{{this._id}}" class="addToCartForm" action="/carts/{{../cartId}}/product/{{this._id}}"
             method="POST">
             <button type="submit" onclick="showAlert()">Agregar al carrito</button>
         </form>
+        {{else}}
+        <button type="button" disabled>Agregar al carrito</button>
+        {{/if}}
         {{/unless}}
 
         {{#if (eq ../user.role 'admin')}}
@@ -52,14 +60,15 @@
 <br />
 <div>
     {{#if prevLink}}
-    <a href="{{prevLink}}"><< Anterior</a>
-    {{/if}}
-    &nbsp;
-    Página: {{page}}
-    &nbsp;
-    {{#if nextLink}}
-    <a href="{{nextLink}}">Siguiente >></a>
-    {{/if}}
+    <a href="{{prevLink}}">
+        << Anterior</a>
+            {{/if}}
+            &nbsp;
+            Página: {{page}}
+            &nbsp;
+            {{#if nextLink}}
+            <a href="{{nextLink}}">Siguiente >></a>
+            {{/if}}
 </div>
 {{else}}
 <h1>No hay productos para mostrar</h1>

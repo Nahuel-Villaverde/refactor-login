@@ -1,0 +1,46 @@
+<div>
+    <h1>Chat en Tiempo Real</h1>
+    <ul id="messages">
+        {{#each messages}}
+        <li><strong>{{user}}:</strong> {{message}}</li>
+        {{/each}}
+    </ul>
+    <form id="chatForm">
+        <input type="text" id="user" name="user" placeholder="Usuario" required>
+        <input type="text" id="message" name="message" placeholder="Mensaje" required>
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const userRole = "{{#if isUser}}user{{else if isAdmin}}admin{{/if}}";
+
+    const form = document.getElementById('chatForm');
+    const messages = document.getElementById('messages');
+
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (userRole === 'admin') {
+                alert('No tienes permiso para enviar mensajes siendo admin.');
+                return;
+            }
+
+            const user = document.getElementById('user').value;
+            const message = document.getElementById('message').value;
+
+            socket.emit('newMessage', { user, message });
+
+            document.getElementById('message').value = '';
+            document.getElementById('user').value = '';
+        });
+    }
+
+    socket.on('updateMessages', function(data) {
+        const newMessage = document.createElement('li');
+        newMessage.innerHTML = `<strong>${data.user}:</strong> ${data.message}`;
+        messages.appendChild(newMessage);
+    });
+</script>

@@ -1,5 +1,8 @@
 import CartRepository from '../repositories/cart.repository.js';
-import productModel from '../dao/models/product.model.js'; // Importar solo si es necesario
+import Cart from '../dao/models/cart.model.js';
+import Ticket from '../dao/models/ticket.model.js';
+import Product from '../dao/models/product.model.js';
+import transporter from '../services/mailer.js';
 
 export const createCart = async (req, res) => {
     const { products } = req.body;
@@ -82,5 +85,89 @@ export const clearCart = async (req, res) => {
     } catch (error) {
         console.error('Error al eliminar los productos del carrito:', error);
         res.status(500).json({ error: 'Error al eliminar los productos del carrito' });
+    }
+};
+
+export const purchaseCart = async (req, res) => {
+    const cartId = req.params.cid;
+
+    try {
+        const cart = await CartRepository.getCartById(cartId);
+        if (!cart) {
+            return res.status(404).json({ message: 'Carrito no encontrado' });
+        }
+
+        let totalAmount = 0;
+        const promises = [];
+
+        cart.products.forEach(cartProduct => {
+            const productId = cartProduct.id._id;
+            const quantity = cartProduct.quantity;
+
+
+            promises.push(new Promise(async (resolve, reject) => {
+                try {
+
+                    const product = await Product.findById(productId);
+
+                    if (!product) {
+                        reject(`Producto con ID ${productId} no encontrado`);
+                        return;
+                    }
+
+
+                    if (product.stock >= quantity) {
+
+                        product.stock -= quantity;
+                        await product.save();
+                        resolve();
+                    } else {
+                        reject(`No hay suficiente stock disponible para ${product.titulo}`);
+                    }
+                } catch (error) {
+                    reject(`Error al actualizar el stock del producto ${productId}: ${error}`);
+                }
+            }));
+            
+            totalAmount += cartProduct.id.precio * cartProduct.quantity;
+        });
+
+        await Promise.all(promises);
+
+        const purchaserEmail = req.user.email;
+        const ticketCode = `TICKET-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+        const newTicket = new Ticket({
+            code: ticketCode,
+            purchase_datetime: new Date(),
+            amount: totalAmount,
+            purchaser: purchaserEmail
+        });
+
+        await newTicket.save();
+
+        const mailOptions = {
+            from: 'tu_correo@gmail.com',
+            to: purchaserEmail,
+            subject: 'Detalle de tu compra',
+            html: `<h1>Tu ticket de compra</h1>
+                   <p>Código: ${newTicket.code}</p>
+                   <p>Fecha y hora de compra: ${newTicket.purchase_datetime}</p>
+                   <p>Total a pagar: $ ${newTicket.amount}</p>`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error al enviar el correo electrónico:', error);
+                res.status(500).json({ message: 'Error al enviar el correo electrónico' });
+            } else {
+                console.log('Correo electrónico enviado:', info.response);
+                res.json(newTicket);
+            }
+        });
+
+        await CartRepository.clearCart(cartId);
+    } catch (error) {
+        console.error('Error al finalizar la compra:', error);
+        res.status(500).json({ message: 'Error al finalizar la compra. No hay suficiente stock disponible' });
     }
 };

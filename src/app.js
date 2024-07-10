@@ -13,12 +13,20 @@ import sessionsRouter from './routes/api/sessions.js';
 import viewsRouter from './routes/views/profile.views.js';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
+import apiMessageRouter from './routes/api/messages.router.js'; 
+import viewMessageRouter from './routes/views/messages.view.js'; 
+import messageModel from './dao/models/message.model.js';
+import ticketViewRouter from './routes/views/tickets.view.js';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 const MONGO_URL = process.env.MONGO_URL;
+const server = createServer(app);
+const io = new Server(server);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -55,12 +63,33 @@ mongoose.connect(MONGO_URL)
 
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
+
+app.use('/api/messages', apiMessageRouter); // Usar la ruta de API
+app.use('/messages', viewMessageRouter); // Usar la ruta de vistas
+
 app.use('/products', productsViewRouter);
 app.use('/carts', viewRouterCart);
 app.use('/api/sessions', sessionsRouter);
 app.use('/', viewsRouter);
+app.use('/tickets', ticketViewRouter);
 
+io.on('connection', (socket) => {
+    console.log('Nuevo cliente conectado');
 
-app.listen(PORT, () => {
+    socket.on('newMessage', async (data) => {
+        try {
+            const newMessage = await messageModel.create(data);
+            io.emit('updateMessages', newMessage);
+        } catch (error) {
+            console.error("Error al guardar el mensaje en la base de datos:", error);
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Cliente desconectado');
+    });
+});
+
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

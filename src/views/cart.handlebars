@@ -18,6 +18,7 @@
         {{/each}}
     </ul>
     <button onclick="clearCart('{{cartId}}')">Eliminar todos los productos del carrito</button>
+    <button onclick="finalizePurchase('{{cartId}}')" style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Finalizar Compra</button>
 </div>
 
 <script>
@@ -59,6 +60,26 @@
         } catch (error) {
             console.error('Error al eliminar el producto del carrito:', error);
             alert('Hubo un error al intentar eliminar el producto del carrito');
+        }
+    }
+
+    async function finalizePurchase(cartId) {
+        try {
+            const response = await fetch(`/api/carts/${cartId}/purchase`, {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                const ticket = await response.json();
+                const ticketUrl = `/tickets/${ticket._id}`;
+                window.open(ticketUrl, '_blank');
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.message}`);
+            }
+        } catch (error) {
+            console.error('Error al finalizar la compra:', error);
+            alert('Hubo un error al intentar finalizar la compra');
         }
     }
 </script>
