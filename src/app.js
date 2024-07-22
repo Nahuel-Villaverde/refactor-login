@@ -17,8 +17,12 @@ import apiMessageRouter from './routes/api/messages.router.js';
 import viewMessageRouter from './routes/views/messages.view.js'; 
 import messageModel from './dao/models/message.model.js';
 import ticketViewRouter from './routes/views/tickets.view.js';
+import mockRouter from './routes/api/mock.router.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+
+import errorHandler from './middleware/index.js';
+
 
 dotenv.config();
 
@@ -61,17 +65,22 @@ mongoose.connect(MONGO_URL)
 .then(() => { console.log("Conectado a la base de datos") })
 .catch(error => console.error("Error en la conexión", error));
 
+app.use('/api', mockRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
 
-app.use('/api/messages', apiMessageRouter); // Usar la ruta de API
-app.use('/messages', viewMessageRouter); // Usar la ruta de vistas
+app.use('/api/messages', apiMessageRouter);
+app.use('/messages', viewMessageRouter);
 
 app.use('/products', productsViewRouter);
 app.use('/carts', viewRouterCart);
 app.use('/api/sessions', sessionsRouter);
 app.use('/', viewsRouter);
 app.use('/tickets', ticketViewRouter);
+
+
+app.use(errorHandler);
+
 
 io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado');

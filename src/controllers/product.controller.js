@@ -1,4 +1,7 @@
 import ProductRepository from '../repositories/product.repository.js';
+import CustomError from '../services/CustomError.js';
+import EErrors from '../services/enum.js';
+import { generateProductErrorInfo } from '../services/info.js';
 
 export const getProducts = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -66,7 +69,17 @@ export const createProduct = async (req, res) => {
     let { titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible } = req.body;
 
     if (!titulo || !descripcion || !precio || !thumbnail || !categoria || !code || stock === undefined || disponible === undefined) {
-        return res.send({ status: "error", error: "Faltan parametros" });
+        try {
+            CustomError.createError({
+                name: "Creación de Producto",
+                cause: generateProductErrorInfo({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible }),
+                message: "Error al intentar crear un producto",
+                code: EErrors.INVALID_TYTPES_ERROR
+            });
+        } catch (error) {
+            console.error(error.cause);
+            return res.status(400).send({ status: "error", error: error.message });
+        }
     }
 
     try {
@@ -83,7 +96,17 @@ export const updateProduct = async (req, res) => {
     const updatedProduct = req.body;
 
     if (!updatedProduct || Object.keys(updatedProduct).length === 0) {
-        return res.status(400).send({ status: "error", error: "Faltan parametros para actualizar" });
+        try {
+            CustomError.createError({
+                name: "Actualización de Producto",
+                cause: "No se han proporcionado parámetros para actualizar",
+                message: "Error al intentar actualizar el producto",
+                code: EErrors.INVALID_TYTPES_ERROR
+            });
+        } catch (error) {
+            console.error(error.cause);
+            return res.status(400).send({ status: "error", error: error.message });
+        }
     }
 
     try {
