@@ -1,0 +1,24 @@
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-07-29T21:00:40.226Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-07-29T21:00:40.962Z"}
+{"level":"debug","message":"Este es un mensaje de debug","timestamp":"2024-07-29T21:00:45.148Z"}
+{"level":"http","message":"Este es un mensaje http","timestamp":"2024-07-29T21:00:45.148Z"}
+{"level":"info","message":"Este es un mensaje informativo","timestamp":"2024-07-29T21:00:45.148Z"}
+{"level":"warning","message":"Este es un mensaje de advertencia","timestamp":"2024-07-29T21:00:45.148Z"}
+{"level":"error","message":"Este es un mensaje de error","timestamp":"2024-07-29T21:00:45.148Z"}
+{"level":"fatal","message":"Este es un mensaje fatal","timestamp":"2024-07-29T21:00:45.148Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-07-29T21:02:32.720Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-07-29T21:02:33.374Z"}
+{"level":"debug","message":"Este es un mensaje de debug","timestamp":"2024-07-29T21:02:36.404Z"}
+{"level":"http","message":"Este es un mensaje http","timestamp":"2024-07-29T21:02:36.405Z"}
+{"level":"info","message":"Este es un mensaje informativo","timestamp":"2024-07-29T21:02:36.405Z"}
+{"level":"warning","message":"Este es un mensaje de advertencia","timestamp":"2024-07-29T21:02:36.406Z"}
+{"level":"error","message":"Este es un mensaje de error","timestamp":"2024-07-29T21:02:36.406Z"}
+{"level":"fatal","message":"Este es un mensaje fatal","timestamp":"2024-07-29T21:02:36.406Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-07-29T21:03:03.042Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-07-29T21:03:03.710Z"}
+{"level":"debug","message":"Este es un mensaje de debug","timestamp":"2024-07-29T21:03:04.263Z"}
+{"level":"http","message":"Este es un mensaje http","timestamp":"2024-07-29T21:03:04.263Z"}
+{"level":"info","message":"Este es un mensaje informativo","timestamp":"2024-07-29T21:03:04.264Z"}
+{"level":"warning","message":"Este es un mensaje de advertencia","timestamp":"2024-07-29T21:03:04.264Z"}
+{"level":"error","message":"Este es un mensaje de error","timestamp":"2024-07-29T21:03:04.264Z"}
+{"level":"fatal","message":"Este es un mensaje fatal","timestamp":"2024-07-29T21:03:04.264Z"}

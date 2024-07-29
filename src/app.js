@@ -20,6 +20,8 @@ import ticketViewRouter from './routes/views/tickets.view.js';
 import mockRouter from './routes/api/mock.router.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import loggerTestRouter from './routes/api/loggerTest.router.js';
+import logger from './config/logger.js';
 
 import errorHandler from './middleware/index.js';
 
@@ -62,8 +64,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(MONGO_URL)
-.then(() => { console.log("Conectado a la base de datos") })
-.catch(error => console.error("Error en la conexión", error));
+.then(() => logger.info("Conectado a la base de datos"))
+.catch(error => logger.error("Error en la conexión", { error }));
 
 app.use('/api', mockRouter);
 app.use('/api/carts', cartRouter);
@@ -78,27 +80,28 @@ app.use('/api/sessions', sessionsRouter);
 app.use('/', viewsRouter);
 app.use('/tickets', ticketViewRouter);
 
+app.use('/api', loggerTestRouter);
 
 app.use(errorHandler);
 
 
 io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado');
+    logger.info('Nuevo cliente conectado');
 
     socket.on('newMessage', async (data) => {
         try {
             const newMessage = await messageModel.create(data);
             io.emit('updateMessages', newMessage);
         } catch (error) {
-            console.error("Error al guardar el mensaje en la base de datos:", error);
+            logger.error("Error al guardar el mensaje en la base de datos:", { error });
         }
     });
 
     socket.on('disconnect', () => {
-        console.log('Cliente desconectado');
+        logger.info('Cliente desconectado');
     });
 });
 
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    logger.info(`Server is running on port ${PORT}`);
 });
