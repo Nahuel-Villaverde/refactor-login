@@ -1,8 +1,8 @@
-import CartRepository from '../repositories/cart.repository.js';
+import CartRepository from '../services/cart.service.js';
 import Cart from '../dao/models/cart.model.js';
 import Ticket from '../dao/models/ticket.model.js';
 import Product from '../dao/models/product.model.js';
-import transporter from '../services/mailer.js';
+import transporter from '../recursos/mailer.js';
 
 export const createCart = async (req, res) => {
     const { products } = req.body;

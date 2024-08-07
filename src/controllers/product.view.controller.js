@@ -1,4 +1,4 @@
-import ProductRepository from '../repositories/product.repository.js';
+import ProductRepository from '../services/product.service.js';
 import productModel from '../dao/models/product.model.js';
 import userModel from '../dao/models/user.js';
 

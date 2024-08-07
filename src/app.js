@@ -22,6 +22,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import loggerTestRouter from './routes/api/loggerTest.router.js';
 import logger from './config/logger.js';
+import userRouter from './routes/api/users.router.js';
 
 import errorHandler from './middleware/index.js';
 
@@ -70,6 +71,7 @@ mongoose.connect(MONGO_URL)
 app.use('/api', mockRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
+app.use('/api/users', userRouter);
 
 app.use('/api/messages', apiMessageRouter);
 app.use('/messages', viewMessageRouter);

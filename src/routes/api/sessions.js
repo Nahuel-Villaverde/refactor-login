@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
-import { register, login, logout, githubCallback, failRegister, failLogin, getCurrentUser } from '../../controllers/session.controller.js';
+import { register, login, logout, githubCallback, failRegister, failLogin, getCurrentUser, renderForgotPassword, handleForgotPassword, renderPasswordReset, handlePasswordReset } from '../../controllers/session.controller.js';
 
 const router = Router();
 
@@ -19,5 +19,11 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/login" }), githubCallback);
 
 router.get('/current', getCurrentUser);
+
+router.get('/forgot-password', renderForgotPassword);
+router.post('/forgot-password', handleForgotPassword);
+
+router.get('/reset/:token', renderPasswordReset);
+router.post('/reset/:token', handlePasswordReset);
 
 export default router;

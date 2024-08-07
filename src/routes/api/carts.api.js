@@ -3,7 +3,7 @@ import { createCart, getCartById, addProductToCart, deleteProductFromCart, updat
 import { isUser } from '../../middleware/auth.js';
 import Ticket from '../../dao/models/ticket.model.js';
 import Cart from '../../dao/models/cart.model.js';
-import transporter from '../../services/mailer.js';
+import transporter from '../../recursos/mailer.js';
 import Product from '../../dao/models/product.model.js';
 
 const router = Router();

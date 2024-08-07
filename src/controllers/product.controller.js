@@ -1,7 +1,7 @@
-import ProductRepository from '../repositories/product.repository.js';
-import CustomError from '../services/CustomError.js';
-import EErrors from '../services/enum.js';
-import { generateProductErrorInfo } from '../services/info.js';
+import ProductRepository from '../services/product.service.js';
+import CustomError from '../recursos/CustomError.js';
+import EErrors from '../recursos/enum.js';
+import { generateProductErrorInfo } from '../recursos/info.js';
 
 export const getProducts = async (req, res) => {
     let page = parseInt(req.query.page) || 1;

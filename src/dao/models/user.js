@@ -9,7 +9,9 @@ const userSchema = new mongoose.Schema({
     age: Number,
     password: String,
     role: { type: String, default: "user" },
-    cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Carritos' } 
+    cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Carritos' },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 });
 
 const User = mongoose.model(userCollection, userSchema);

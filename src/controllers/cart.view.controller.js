@@ -1,4 +1,4 @@
-import CartRepository from '../repositories/cart.repository.js';
+import CartRepository from '../services/cart.service.js';
 
 export const getCartById = async (req, res) => {
     try {
