@@ -13,8 +13,8 @@ import sessionsRouter from './routes/api/sessions.js';
 import viewsRouter from './routes/views/profile.views.js';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
-import apiMessageRouter from './routes/api/messages.router.js'; 
-import viewMessageRouter from './routes/views/messages.view.js'; 
+import apiMessageRouter from './routes/api/messages.router.js';
+import viewMessageRouter from './routes/views/messages.view.js';
 import messageModel from './dao/models/message.model.js';
 import ticketViewRouter from './routes/views/tickets.view.js';
 import mockRouter from './routes/api/mock.router.js';
@@ -23,7 +23,8 @@ import { Server } from 'socket.io';
 import loggerTestRouter from './routes/api/loggerTest.router.js';
 import logger from './config/logger.js';
 import userRouter from './routes/api/users.router.js';
-
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUIExpress from 'swagger-ui-express';
 import errorHandler from './middleware/index.js';
 
 
@@ -37,6 +38,21 @@ const io = new Server(server);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "Documentation",
+            description: "Api clase Swagger",
+        },
+    },
+    apis: ["src/docs/**/*.yaml"],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/apidocs", swaggerUIExpress.serve, swaggerUIExpress.setup(specs));
+
 
 app.use(session({
     secret: process.env.SESSION_SECRET || 'secretkey',
@@ -65,8 +81,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(MONGO_URL)
-.then(() => logger.info("Conectado a la base de datos"))
-.catch(error => logger.error("Error en la conexión", { error }));
+    .then(() => logger.info("Conectado a la base de datos"))
+    .catch(error => logger.error("Error en la conexión", { error }));
 
 app.use('/api', mockRouter);
 app.use('/api/carts', cartRouter);
