@@ -100,6 +100,10 @@ app.use('/tickets', ticketViewRouter);
 
 app.use('/api', loggerTestRouter);
 
+app.get('/test', (req, res) => {
+    res.status(200).json({ message: 'Test endpoint is working!' });
+});
+
 app.use(errorHandler);
 
 
