@@ -31,9 +31,12 @@ export const register = async (req, res, next) => {
     })(req, res, next);
 };
 
-export const login = (req, res) => {
+export const login = async (req, res) => {
     if (!req.user) return res.status(400).send({ status: "error", error: "Datos incompletos" });
+
     try {
+        await User.findByIdAndUpdate(req.user._id, { last_connection: new Date() });
+
         req.session.user = {
             first_name: req.user.first_name,
             last_name: req.user.last_name,
@@ -49,11 +52,19 @@ export const login = (req, res) => {
     }
 };
 
-export const logout = (req, res) => {
-    req.session.destroy((err) => {
-        if (err) return res.status(500).send('Error al cerrar sesión');
-        res.redirect('/login');
-    });
+export const logout = async (req, res) => {
+    try {
+        if (req.user) {
+            await User.findByIdAndUpdate(req.user._id, { last_connection: new Date() });
+        }
+
+        req.session.destroy((err) => {
+            if (err) return res.status(500).send('Error al cerrar sesión');
+            res.redirect('/login');
+        });
+    } catch (err) {
+        res.status(500).send('Error al cerrar sesión');
+    }
 };
 
 export const githubCallback = async (req, res) => {
@@ -61,6 +72,9 @@ export const githubCallback = async (req, res) => {
         if (!req.user.cartId) {
             await createUserAndCart(req.user);
         }
+
+        await User.findByIdAndUpdate(req.user._id, { last_connection: new Date() });
+
         req.session.user = req.user;
         res.redirect("/products");
     } catch (error) {

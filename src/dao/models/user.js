@@ -11,7 +11,14 @@ const userSchema = new mongoose.Schema({
     role: { type: String, default: "user" },
     cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Carritos' },
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    documents: [
+        {
+            name: String, // Nombre del documento
+            reference: String // Link al documento
+        }
+    ],
+    last_connection: Date
 });
 
 const User = mongoose.model(userCollection, userSchema);
