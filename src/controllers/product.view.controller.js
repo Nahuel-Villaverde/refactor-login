@@ -53,7 +53,7 @@ export const renderProducts = async (req, res) => {
         const user = await userModel.findById(req.user._id);
         const cartId = user.cartId;
 
-        res.render('products', { products: result.docs, page, limit, prevLink, nextLink, categoria, sort, disponible, cartId, user: req.session.user });
+        res.render('products', { products: result.docs, page, limit, prevLink, nextLink, categoria, sort, disponible, cartId, user: req.session.user, userId: user._id });
     } catch (error) {
         console.error('Error al obtener los productos:', error);
         res.status(500).render('error', { error: 'Error al obtener los productos' });

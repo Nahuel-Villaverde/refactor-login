@@ -5,17 +5,50 @@ export const toggleUserRoleController = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const user = await toggleUserRole(userId);
-
-        res.status(200).send({ status: 'success', message: `Rol cambiado a ${user.role}`, user });
-    } catch (error) {
-        if (error.message === 'Usuario no encontrado') {
-            res.status(404).send({ status: 'error', message: error.message });
-        } else {
-            res.status(500).send({ status: 'error', message: 'Error al cambiar el rol del usuario', error: error.message });
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
         }
+
+        // Verifica el rol actual del usuario y realiza los cambios correspondientes
+        if (user.role === 'admin') {
+            user.role = 'user';
+        } else if (user.role === 'user') {
+            const requiredDocuments = ['Identificacion.txt', 'Comprobante de domicilio.txt', 'Comprobante de estado de cuenta.txt'];
+
+            const hasAllDocuments = requiredDocuments.every(docType => {
+                return user.documents.some(doc => doc.name === docType);
+            });
+
+            if (!hasAllDocuments) {
+                // Asegura que siempre se devuelva JSON cuando faltan documentos
+                return res.status(400).json({ 
+                    status: 'error', 
+                    message: 'No se han subido los documentos necesarios para cambiar a premium: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta.' 
+                });
+            }
+
+            user.role = 'admin';
+        } else {
+            return res.status(400).send({ status: 'error', message: 'Rol de usuario no válido para cambio' });
+        }
+
+        await user.save();
+
+        // Destruye la sesión actual después de cambiar el rol
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).send({ status: 'error', message: 'Error al cerrar la sesión', error: err.message });
+            }
+
+            res.status(200).send({ status: 'success', message: `Rol cambiado a ${user.role}. Sesión cerrada.`, user });
+        });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: 'Error al cambiar el rol del usuario', error: error.message });
     }
 };
+
+
 
 export const renderUploadDocuments = (req, res) => {
     // Renderiza la vista y pasa el userId al frontend si es necesario

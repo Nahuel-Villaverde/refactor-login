@@ -10,6 +10,12 @@
 </form>
 
 <br><br><br>
+<button id="upgradeToPremiumButton">Cambiar de rol</button>
+<br><br><br>
+
+<br><br><br>
+<button id="uploadDocumentsButton">Subir Documentos</button>
+<br><br><br>
 
 {{#if (eq user.role 'admin')}}
 <a href="/products/create" class="btn">Agregar Producto</a>
@@ -102,4 +108,36 @@
             alert('Error al eliminar el producto');
         }
     }
+
+    document.getElementById('uploadDocumentsButton').addEventListener('click', () => {
+        // Redirige a la ruta para subir documentos, ajusta `userId` según sea necesario
+        const userId = '{{userId}}'; // Asegúrate de que `userId` esté disponible en el contexto de Handlebars
+        window.location.href = `/api/users/${userId}/documents`;
+    });
+
+    document.getElementById('upgradeToPremiumButton').addEventListener('click', async () => {
+        // Captura el ID del usuario desde el contexto de Handlebars
+        const userId = '{{userId}}'; // Ajusta esto según cómo esté estructurado tu objeto user
+
+        try {
+            // Realiza la solicitud PUT al servidor
+            const response = await fetch(`/api/users/premium/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            // Maneja la respuesta
+            const result = await response.json();
+            if (response.ok) {
+                alert(`${result.message}`);
+                window.location.reload(); // Recargar la página para reflejar los cambios
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        } catch (error) {
+            alert(`Error inesperado: ${error.message}`);
+        }
+    });
 </script>
