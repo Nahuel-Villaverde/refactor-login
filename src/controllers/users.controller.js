@@ -146,3 +146,23 @@ export const uploadDocument = async (req, res) => {
         res.status(500).send({ status: 'error', error: 'Error al subir el documento' });
     }
 };
+
+
+// Controlador para obtener todos los usuarios con datos principales
+export const getAllUsers = async (req, res) => {
+    try {
+        // Obtiene los usuarios, seleccionando solo los campos deseados
+        const users = await User.find({}, 'first_name last_name email role');
+
+        // Formatea la respuesta para devolver un arreglo de objetos con los campos principales
+        const formattedUsers = users.map(user => ({
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            role: user.role
+        }));
+
+        res.status(200).json({ status: 'success', users: formattedUsers });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: 'Error al obtener los usuarios', error: error.message });
+    }
+};

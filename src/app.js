@@ -26,7 +26,7 @@ import userRouter from './routes/api/users.router.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUIExpress from 'swagger-ui-express';
 import errorHandler from './middleware/index.js';
-
+import userViewRouter from './routes/views/users.view.js';
 
 dotenv.config();
 
@@ -94,6 +94,7 @@ app.use('/messages', viewMessageRouter);
 
 app.use('/products', productsViewRouter);
 app.use('/carts', viewRouterCart);
+app.use('/users', userViewRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/', viewsRouter);
 app.use('/tickets', ticketViewRouter);

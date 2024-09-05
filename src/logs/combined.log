@@ -164,3 +164,15 @@
 {"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-02T22:45:51.945Z"}
 {"level":"info","message":"Nuevo cliente conectado","timestamp":"2024-09-02T22:53:36.240Z"}
 {"level":"info","message":"Cliente desconectado","timestamp":"2024-09-02T22:53:40.979Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-05T02:06:37.266Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-05T02:06:37.997Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-05T18:20:28.920Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-05T18:20:29.642Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-05T18:31:59.317Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-05T18:31:59.968Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-05T18:32:59.272Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-05T18:33:00.064Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-05T18:34:33.028Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-05T18:34:33.737Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-05T18:35:54.779Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-05T18:35:55.505Z"}
