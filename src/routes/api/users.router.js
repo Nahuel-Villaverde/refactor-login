@@ -1,5 +1,5 @@
 import express from 'express';
-import { toggleUserRoleController, uploadProfileImage, uploadProductImage, uploadDocument, renderUploadDocuments, getAllUsers } from '../../controllers/users.controller.js';
+import { toggleUserRoleController, uploadProfileImage, uploadProductImage, uploadDocument, renderUploadDocuments, getAllUsers, deleteInactiveUsers } from '../../controllers/users.controller.js';
 import { upload } from '../../middleware/multer.js'; // Importa el middleware de Multer
 
 const router = express.Router();
@@ -9,6 +9,8 @@ router.put('/premium/:userId', toggleUserRoleController);
 router.get('/:uid/documents', renderUploadDocuments);
 
 router.get('/', getAllUsers);
+
+router.delete('/', deleteInactiveUsers);
 
 // Rutas para subir archivos
 router.post('/:uid/profile-image', upload.single('profileImage'), uploadProfileImage);

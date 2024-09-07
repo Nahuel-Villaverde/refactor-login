@@ -1,5 +1,6 @@
 import { toggleUserRole } from '../services/user.service.js';
 import User from '../dao/models/user.js';
+import transporter from '../recursos/mailer.js';
 
 export const toggleUserRoleController = async (req, res) => {
     const { userId } = req.params;
@@ -166,3 +167,36 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({ status: 'error', message: 'Error al obtener los usuarios', error: error.message });
     }
 };
+
+
+export const deleteInactiveUsers = async (req, res) => {
+    try {
+      // Calcula la fecha límite (últimos 30 minutos para pruebas, 2 días para producción)
+      const cutoffDate = new Date(Date.now() - 2 * 60 * 1000); // Cambia a 2 días (2 * 24 * 60 * 60 * 1000) para producción.
+  
+      // Encuentra los usuarios inactivos
+      const inactiveUsers = await User.find({ last_connection: { $lt: cutoffDate } });
+  
+      if (inactiveUsers.length === 0) {
+        return res.status(200).send({ message: 'No hay usuarios inactivos para eliminar.' });
+      }
+  
+      // Elimina a los usuarios inactivos
+      const deletedUsers = await User.deleteMany({ last_connection: { $lt: cutoffDate } });
+  
+      // Envía un correo de notificación a cada usuario eliminado
+      for (const user of inactiveUsers) {
+        await transporter.sendMail({
+          from: 'nahuelvillaverdeoficial@gmail.com',
+          to: user.email,
+          subject: 'Cuenta eliminada por inactividad',
+          text: `Hola ${user.first_name}, tu cuenta ha sido eliminada por inactividad.`,
+        });
+      }
+  
+      res.status(200).send({ message: 'Usuarios inactivos eliminados y notificados.', count: deletedUsers.deletedCount });
+    } catch (error) {
+      console.error('Error al eliminar usuarios inactivos:', error);
+      res.status(500).send({ message: 'Error al eliminar usuarios inactivos.', error: error.message });
+    }
+  };
