@@ -23,9 +23,9 @@ export const toggleUserRoleController = async (req, res) => {
 
             if (!hasAllDocuments) {
                 // Asegura que siempre se devuelva JSON cuando faltan documentos
-                return res.status(400).json({ 
-                    status: 'error', 
-                    message: 'No se han subido los documentos necesarios para cambiar a premium: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta.' 
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'No se han subido los documentos necesarios para cambiar a premium: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta.'
                 });
             }
 
@@ -150,53 +150,78 @@ export const uploadDocument = async (req, res) => {
 
 
 // Controlador para obtener todos los usuarios con datos principales
+// controllers/users.controller.js
 export const getAllUsers = async (req, res) => {
     try {
-        // Obtiene los usuarios, seleccionando solo los campos deseados
-        const users = await User.find({}, 'first_name last_name email role');
-
-        // Formatea la respuesta para devolver un arreglo de objetos con los campos principales
-        const formattedUsers = users.map(user => ({
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            role: user.role
-        }));
-
-        res.status(200).json({ status: 'success', users: formattedUsers });
+      // Obtiene los usuarios, incluyendo el _id
+      const users = await User.find({}, 'first_name last_name email role _id');
+      
+      // Verifica si los datos incluyen el id antes de enviarlos
+      const formattedUsers = users.map(user => ({
+        id: user._id.toString(), // Asegúrate de convertir _id a string si no se muestra correctamente
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        role: user.role
+      }));
+  
+      console.log('Usuarios obtenidos:', formattedUsers); // Verifica que los IDs estén presentes
+  
+      res.status(200).json({ status: 'success', users: formattedUsers });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Error al obtener los usuarios', error: error.message });
+      res.status(500).json({ status: 'error', message: 'Error al obtener los usuarios', error: error.message });
     }
-};
+  };
+  
 
 
 export const deleteInactiveUsers = async (req, res) => {
     try {
-      // Calcula la fecha límite (últimos 30 minutos para pruebas, 2 días para producción)
-      const cutoffDate = new Date(Date.now() - 2 * 60 * 1000); // Cambia a 2 días (2 * 24 * 60 * 60 * 1000) para producción.
-  
-      // Encuentra los usuarios inactivos
-      const inactiveUsers = await User.find({ last_connection: { $lt: cutoffDate } });
-  
-      if (inactiveUsers.length === 0) {
-        return res.status(200).send({ message: 'No hay usuarios inactivos para eliminar.' });
-      }
-  
-      // Elimina a los usuarios inactivos
-      const deletedUsers = await User.deleteMany({ last_connection: { $lt: cutoffDate } });
-  
-      // Envía un correo de notificación a cada usuario eliminado
-      for (const user of inactiveUsers) {
-        await transporter.sendMail({
-          from: 'nahuelvillaverdeoficial@gmail.com',
-          to: user.email,
-          subject: 'Cuenta eliminada por inactividad',
-          text: `Hola ${user.first_name}, tu cuenta ha sido eliminada por inactividad.`,
-        });
-      }
-  
-      res.status(200).send({ message: 'Usuarios inactivos eliminados y notificados.', count: deletedUsers.deletedCount });
+        // Calcula la fecha límite (últimos 30 minutos para pruebas, 2 días para producción)
+        const cutoffDate = new Date(Date.now() - 2 * 60 * 1000); // Cambia a 2 días (2 * 24 * 60 * 60 * 1000) para producción.
+
+        // Encuentra los usuarios inactivos
+        const inactiveUsers = await User.find({ last_connection: { $lt: cutoffDate } });
+
+        if (inactiveUsers.length === 0) {
+            return res.status(200).send({ message: 'No hay usuarios inactivos para eliminar.' });
+        }
+
+        // Elimina a los usuarios inactivos
+        const deletedUsers = await User.deleteMany({ last_connection: { $lt: cutoffDate } });
+
+        // Envía un correo de notificación a cada usuario eliminado
+        for (const user of inactiveUsers) {
+            await transporter.sendMail({
+                from: 'nahuelvillaverdeoficial@gmail.com',
+                to: user.email,
+                subject: 'Cuenta eliminada por inactividad',
+                text: `Hola ${user.first_name}, tu cuenta ha sido eliminada por inactividad.`,
+            });
+        }
+
+        res.status(200).send({ message: 'Usuarios inactivos eliminados y notificados.', count: deletedUsers.deletedCount });
     } catch (error) {
-      console.error('Error al eliminar usuarios inactivos:', error);
-      res.status(500).send({ message: 'Error al eliminar usuarios inactivos.', error: error.message });
+        console.error('Error al eliminar usuarios inactivos:', error);
+        res.status(500).send({ message: 'Error al eliminar usuarios inactivos.', error: error.message });
+    }
+};
+
+
+export const toggleUserRoleSimple = async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
+      }
+  
+      // Cambia el rol sin verificación adicional
+      user.role = user.role === 'user' ? 'admin' : 'user';
+      await user.save();
+  
+      res.status(200).json({ status: 'success', message: `Rol cambiado a ${user.role}`, user });
+    } catch (error) {
+      res.status(500).json({ status: 'error', message: 'Error al cambiar el rol del usuario', error: error.message });
     }
   };
