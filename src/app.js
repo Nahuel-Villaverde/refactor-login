@@ -84,6 +84,10 @@ mongoose.connect(MONGO_URL)
     .then(() => logger.info("Conectado a la base de datos"))
     .catch(error => logger.error("Error en la conexión", { error }));
 
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
 app.use('/api', mockRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
