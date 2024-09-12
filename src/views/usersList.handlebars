@@ -26,14 +26,25 @@
     button {
       padding: 10px 15px;
       cursor: pointer;
-      background-color: #007bff;
       color: white;
       border: none;
       border-radius: 5px;
     }
 
-    button:hover {
+    .change-role {
+      background-color: #007bff;
+    }
+
+    .change-role:hover {
       background-color: #0056b3;
+    }
+
+    .delete-user {
+      background-color: #dc3545;
+    }
+
+    .delete-user:hover {
+      background-color: #c82333;
     }
   </style>
 
@@ -55,8 +66,11 @@
         <td>{{this.email}}</td>
         <td>{{this.role}}</td>
         <td>
-          <button onclick="toggleUserRole('{{this.id}}')">
+          <button class="change-role" onclick="toggleUserRole('{{this.id}}')">
             Cambiar Rol
+          </button>
+          <button class="delete-user" onclick="deleteUser('{{this.id}}')">
+            Eliminar
           </button>
         </td>
       </tr>
@@ -92,6 +106,33 @@
     } catch (error) {
       console.error('Error al cambiar el rol:', error);
       alert('Hubo un error al intentar cambiar el rol del usuario.');
+    }
+  }
+
+  // Función para eliminar un usuario
+  async function deleteUser(userId) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) return;
+
+    try {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        alert(data.message);
+        // Recarga la página para reflejar los cambios
+        window.location.reload();
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+      alert('Hubo un error al intentar eliminar el usuario.');
     }
   }
 </script>

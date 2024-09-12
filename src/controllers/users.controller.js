@@ -225,3 +225,19 @@ export const toggleUserRoleSimple = async (req, res) => {
       res.status(500).json({ status: 'error', message: 'Error al cambiar el rol del usuario', error: error.message });
     }
   };
+
+
+  export const deleteUser = async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      const user = await User.findByIdAndDelete(userId);
+      if (!user) {
+        return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
+      }
+  
+      res.status(200).json({ status: 'success', message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+      res.status(500).json({ status: 'error', message: 'Error al eliminar el usuario', error: error.message });
+    }
+  };
