@@ -4,3 +4,5 @@
 {"level":"info","message":"Cliente desconectado","timestamp":"2024-09-12T22:35:04.285Z"}
 {"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-12T23:20:47.525Z"}
 {"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-12T23:20:48.286Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-12T23:37:04.456Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-12T23:37:05.125Z"}

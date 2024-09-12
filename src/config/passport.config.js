@@ -3,7 +3,7 @@ import GitHubStrategy from 'passport-github2';
 import GoogleStrategy from 'passport-google-oauth20';
 import local from 'passport-local';
 import userService from '../dao/models/user.js';
-import cartModel from '../dao/models/cart.model.js'; // Importar el modelo de carrito
+import cartModel from '../dao/models/cart.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import dotenv from 'dotenv';
 
@@ -15,7 +15,7 @@ const initializePassport = () => {
     passport.use('github', new GitHubStrategy({
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+        callbackURL: "http://refactor-login-production.up.railway.app/api/sessions/githubcallback"
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             console.log(profile);
@@ -47,7 +47,7 @@ const initializePassport = () => {
     passport.use('google', new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/api/sessions/google/callback"
+        callbackURL: "http://refactor-login-production.up.railway.app/api/sessions/google/callback"
     }, async (token, tokenSecret, profile, done) => {
         try {
             console.log(profile);
