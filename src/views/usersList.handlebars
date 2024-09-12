@@ -84,7 +84,6 @@
 </div>
 
 <script>
-  // Función para cambiar el rol del usuario
   async function toggleUserRole(userId) {
     try {
       const response = await fetch(`/api/users/toggle-role/${userId}`, {
@@ -98,7 +97,6 @@
 
       if (data.status === 'success') {
         alert(data.message);
-        // Recarga la página para reflejar los cambios
         window.location.reload();
       } else {
         alert(`Error: ${data.message}`);
@@ -109,7 +107,6 @@
     }
   }
 
-  // Función para eliminar un usuario
   async function deleteUser(userId) {
     if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) return;
 
@@ -125,7 +122,6 @@
 
       if (data.status === 'success') {
         alert(data.message);
-        // Recarga la página para reflejar los cambios
         window.location.reload();
       } else {
         alert(`Error: ${data.message}`);

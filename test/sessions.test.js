@@ -46,7 +46,6 @@ describe('Testeo de Sessions', () => {
     expect(response.status).to.equal(302);
     expect(response.headers).to.have.property('location', '/login');
 
-    // Intentar obtener el usuario actual después de cerrar sesión
     const currentUserResponse = await requester
       .get('/api/sessions/current')
       .set('Cookie', [`connect.sid=${userToken}`]);

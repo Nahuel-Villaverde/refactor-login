@@ -1,14 +1,11 @@
-// middlewares/multer.js
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 
-// Configuración de Multer para diferentes tipos de archivos
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let folder = '';
 
-        // Determinar la carpeta según el tipo de archivo
         if (file.fieldname === 'profileImage') {
             folder = 'uploads/profiles';
         } else if (file.fieldname === 'productImage') {
@@ -17,7 +14,6 @@ const storage = multer.diskStorage({
             folder = 'uploads/documents';
         }
 
-        // Crear la carpeta si no existe
         if (!fs.existsSync(folder)) {
             fs.mkdirSync(folder, { recursive: true });
         }
@@ -30,7 +26,6 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    // Puedes agregar lógica adicional para filtrar tipos de archivos
     cb(null, true);
 };
 

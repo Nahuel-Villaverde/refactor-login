@@ -128,7 +128,7 @@ export const purchaseCart = async (req, res) => {
                     reject(`Error al actualizar el stock del producto ${productId}: ${error}`);
                 }
             }));
-            
+
             totalAmount += cartProduct.id.precio * cartProduct.quantity;
         });
 

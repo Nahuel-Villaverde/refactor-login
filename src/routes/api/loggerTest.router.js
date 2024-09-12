@@ -1,5 +1,5 @@
 import express from 'express';
-import logger from '../../config/logger.js'; // Ajusta la ruta según sea necesario
+import logger from '../../config/logger.js';
 
 const router = express.Router();
 

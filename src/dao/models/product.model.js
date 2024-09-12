@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
     code: { type: String, required: true },
     stock: { type: Number, required: true },
     disponible: { type: Boolean, required: true },
-    owner: { type: String, required: true }, // Nuevo campo para guardar el email del creador
+    owner: { type: String, required: true }, 
 });
 
 productSchema.plugin(mongoosePaginate);

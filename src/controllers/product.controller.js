@@ -68,7 +68,7 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
     let { titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible } = req.body;
-    const owner = req.user.email; // Suponiendo que req.user contiene los datos del usuario autenticado
+    const owner = req.user.email;
 
     if (!titulo || !descripcion || !precio || !thumbnail || !categoria || !code || stock === undefined || disponible === undefined) {
         try {
@@ -94,7 +94,7 @@ export const createProduct = async (req, res) => {
             code,
             stock,
             disponible,
-            owner, // Se guarda el email del usuario como propietario del producto
+            owner,
         });
         res.send({ status: "success", payload: result });
     } catch (error) {
@@ -139,21 +139,18 @@ export const deleteProduct = async (req, res) => {
     const productId = req.params.id;
 
     try {
-        // Obtener el producto antes de eliminarlo para conocer el email del owner
         const product = await ProductRepository.getProductById(productId);
         
         if (!product) {
             return res.status(404).send({ result: "error", message: "Producto no encontrado" });
         }
 
-        // Eliminar el producto
         const result = await ProductRepository.deleteProduct(productId);
 
         if (!result) {
             return res.status(404).send({ result: "error", message: "Producto no encontrado" });
         }
 
-        // Enviar el correo al owner del producto eliminado
         await transporter.sendMail({
             from: 'nahuelvillaverdeoficial@gmail.com',
             to: product.owner,

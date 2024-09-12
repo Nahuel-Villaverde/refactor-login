@@ -40,7 +40,6 @@ describe('Testeo de Productos', () => {
     expect(deleteResponse.body).to.have.property('status', 'success');
     expect(deleteResponse.body).to.have.property('message', 'Producto eliminado exitosamente');
 
-    // Verificar que el producto ha sido eliminado
     const getResponse = await requester.get(`/api/products/${productId}`);
     expect(getResponse.status).to.equal(404);
     expect(getResponse.body).to.have.property('result', 'error');

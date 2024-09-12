@@ -14,8 +14,8 @@ const userSchema = new mongoose.Schema({
     resetPasswordExpires: Date,
     documents: [
         {
-            name: String, // Nombre del documento
-            reference: String // Link al documento
+            name: String, 
+            reference: String 
         }
     ],
     last_connection: Date

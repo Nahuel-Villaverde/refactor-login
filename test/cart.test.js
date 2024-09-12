@@ -9,7 +9,6 @@ describe('Testeo de Carritos', () => {
   let productId;
 
   before(async () => {
-    // Crear un producto para usarlo en los tests del carrito
     const newProduct = {
       titulo: "Producto de Prueba",
       descripcion: "Descripción del producto de prueba",

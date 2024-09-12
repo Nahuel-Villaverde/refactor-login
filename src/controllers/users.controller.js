@@ -11,7 +11,6 @@ export const toggleUserRoleController = async (req, res) => {
             return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
         }
 
-        // Verifica el rol actual del usuario y realiza los cambios correspondientes
         if (user.role === 'admin') {
             user.role = 'user';
         } else if (user.role === 'user') {
@@ -22,7 +21,6 @@ export const toggleUserRoleController = async (req, res) => {
             });
 
             if (!hasAllDocuments) {
-                // Asegura que siempre se devuelva JSON cuando faltan documentos
                 return res.status(400).json({
                     status: 'error',
                     message: 'No se han subido los documentos necesarios para cambiar a premium: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta.'
@@ -36,7 +34,6 @@ export const toggleUserRoleController = async (req, res) => {
 
         await user.save();
 
-        // Destruye la sesión actual después de cambiar el rol
         req.session.destroy((err) => {
             if (err) {
                 return res.status(500).send({ status: 'error', message: 'Error al cerrar la sesión', error: err.message });
@@ -49,10 +46,7 @@ export const toggleUserRoleController = async (req, res) => {
     }
 };
 
-
-
 export const renderUploadDocuments = (req, res) => {
-    // Renderiza la vista y pasa el userId al frontend si es necesario
     res.render('uploadDocuments', { userId: req.params.uid });
 };
 
@@ -60,21 +54,18 @@ export const uploadProfileImage = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        // Verifica si se ha subido un archivo
         if (!req.file) {
             return res.status(400).send({ status: 'error', error: 'No se ha subido ningún archivo' });
         }
 
-        // Encuentra el usuario y actualiza su documento
         const user = await User.findById(uid);
         if (!user) {
             return res.status(404).send({ status: 'error', error: 'Usuario no encontrado' });
         }
 
-        // Actualiza el campo 'documents' en el documento del usuario
         user.documents.push({
             name: req.file.originalname,
-            reference: req.file.path // Guardar la ruta del archivo en la base de datos
+            reference: req.file.path 
         });
 
         await user.save();
@@ -90,21 +81,18 @@ export const uploadProductImage = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        // Verifica si se ha subido un archivo
         if (!req.file) {
             return res.status(400).send({ status: 'error', error: 'No se ha subido ningún archivo' });
         }
 
-        // Encuentra el usuario
         const user = await User.findById(uid);
         if (!user) {
             return res.status(404).send({ status: 'error', error: 'Usuario no encontrado' });
         }
 
-        // Actualiza el campo 'documents' con la imagen del producto
         user.documents.push({
             name: req.file.originalname,
-            reference: req.file.path // Guardar la ruta del archivo en la base de datos
+            reference: req.file.path 
         });
 
         await user.save();
@@ -120,21 +108,18 @@ export const uploadDocument = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        // Verifica si se ha subido un archivo
         if (!req.file) {
             return res.status(400).send({ status: 'error', error: 'No se ha subido ningún archivo' });
         }
 
-        // Encuentra el usuario
         const user = await User.findById(uid);
         if (!user) {
             return res.status(404).send({ status: 'error', error: 'Usuario no encontrado' });
         }
 
-        // Actualiza el campo 'documents' en el documento del usuario
         const document = {
             name: req.file.originalname,
-            reference: req.file.path // Guardar la ruta del archivo en la base de datos
+            reference: req.file.path
         };
 
         user.documents.push(document);
@@ -149,22 +134,18 @@ export const uploadDocument = async (req, res) => {
 };
 
 
-// Controlador para obtener todos los usuarios con datos principales
-// controllers/users.controller.js
 export const getAllUsers = async (req, res) => {
     try {
-      // Obtiene los usuarios, incluyendo el _id
       const users = await User.find({}, 'first_name last_name email role _id');
       
-      // Verifica si los datos incluyen el id antes de enviarlos
       const formattedUsers = users.map(user => ({
-        id: user._id.toString(), // Asegúrate de convertir _id a string si no se muestra correctamente
+        id: user._id.toString(),
         name: `${user.first_name} ${user.last_name}`,
         email: user.email,
         role: user.role
       }));
   
-      console.log('Usuarios obtenidos:', formattedUsers); // Verifica que los IDs estén presentes
+      console.log('Usuarios obtenidos:', formattedUsers);
   
       res.status(200).json({ status: 'success', users: formattedUsers });
     } catch (error) {
@@ -176,20 +157,16 @@ export const getAllUsers = async (req, res) => {
 
 export const deleteInactiveUsers = async (req, res) => {
     try {
-        // Calcula la fecha límite (últimos 30 minutos para pruebas, 2 días para producción)
-        const cutoffDate = new Date(Date.now() - 2 * 60 * 1000); // Cambia a 2 días (2 * 24 * 60 * 60 * 1000) para producción.
+        const cutoffDate = new Date(Date.now() - 2 * 60 * 1000); // Cambia a 2 días (2 * 24 * 60 * 60 * 1000)
 
-        // Encuentra los usuarios inactivos
         const inactiveUsers = await User.find({ last_connection: { $lt: cutoffDate } });
 
         if (inactiveUsers.length === 0) {
             return res.status(200).send({ message: 'No hay usuarios inactivos para eliminar.' });
         }
 
-        // Elimina a los usuarios inactivos
         const deletedUsers = await User.deleteMany({ last_connection: { $lt: cutoffDate } });
 
-        // Envía un correo de notificación a cada usuario eliminado
         for (const user of inactiveUsers) {
             await transporter.sendMail({
                 from: 'nahuelvillaverdeoficial@gmail.com',
@@ -216,7 +193,6 @@ export const toggleUserRoleSimple = async (req, res) => {
         return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
       }
   
-      // Cambia el rol sin verificación adicional
       user.role = user.role === 'user' ? 'admin' : 'user';
       await user.save();
   
