@@ -1,20 +1,22 @@
-import mongoose, { mongo } from "mongoose";
+// product.model.js
+import mongoose from "mongoose";
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-const productCollection = "Productos"
+const productCollection = "Productos";
 
 const productSchema = new mongoose.Schema({
-    titulo: { type: String, require: true, max: 50 },
-    descripcion: { type: String, require: true, max: 100 },
-    precio: { type: Number, require: true},
-    thumbnail: { type: String, require: true},
-    categoria: {type: String, require: true },
-    code: { type: String, require: true},
-    stock: { type: Number, require: true},
-    disponible: { type: Boolean, require: true},
-})
+    titulo: { type: String, required: true, max: 50 },
+    descripcion: { type: String, required: true, max: 100 },
+    precio: { type: Number, required: true },
+    thumbnail: { type: String, required: true },
+    categoria: { type: String, required: true },
+    code: { type: String, required: true },
+    stock: { type: Number, required: true },
+    disponible: { type: Boolean, required: true },
+    owner: { type: String, required: true }, // Nuevo campo para guardar el email del creador
+});
 
 productSchema.plugin(mongoosePaginate);
-const productModel = mongoose.model(productCollection, productSchema)
+const productModel = mongoose.model(productCollection, productSchema);
 
 export default productModel;

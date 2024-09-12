@@ -2,6 +2,7 @@ import ProductRepository from '../services/product.service.js';
 import CustomError from '../recursos/CustomError.js';
 import EErrors from '../recursos/enum.js';
 import { generateProductErrorInfo } from '../recursos/info.js';
+import transporter from '../recursos/mailer.js';
 
 export const getProducts = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -67,6 +68,7 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
     let { titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible } = req.body;
+    const owner = req.user.email; // Suponiendo que req.user contiene los datos del usuario autenticado
 
     if (!titulo || !descripcion || !precio || !thumbnail || !categoria || !code || stock === undefined || disponible === undefined) {
         try {
@@ -74,7 +76,7 @@ export const createProduct = async (req, res) => {
                 name: "Creación de Producto",
                 cause: generateProductErrorInfo({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible }),
                 message: "Error al intentar crear un producto",
-                code: EErrors.INVALID_TYTPES_ERROR
+                code: EErrors.INVALID_TYTPES_ERROR,
             });
         } catch (error) {
             console.error(error.cause);
@@ -83,7 +85,17 @@ export const createProduct = async (req, res) => {
     }
 
     try {
-        let result = await ProductRepository.createProduct({ titulo, descripcion, precio, thumbnail, categoria, code, stock, disponible });
+        let result = await ProductRepository.createProduct({
+            titulo,
+            descripcion,
+            precio,
+            thumbnail,
+            categoria,
+            code,
+            stock,
+            disponible,
+            owner, // Se guarda el email del usuario como propietario del producto
+        });
         res.send({ status: "success", payload: result });
     } catch (error) {
         console.error('Error al crear producto:', error);
@@ -127,11 +139,27 @@ export const deleteProduct = async (req, res) => {
     const productId = req.params.id;
 
     try {
+        // Obtener el producto antes de eliminarlo para conocer el email del owner
+        const product = await ProductRepository.getProductById(productId);
+        
+        if (!product) {
+            return res.status(404).send({ result: "error", message: "Producto no encontrado" });
+        }
+
+        // Eliminar el producto
         const result = await ProductRepository.deleteProduct(productId);
 
         if (!result) {
             return res.status(404).send({ result: "error", message: "Producto no encontrado" });
         }
+
+        // Enviar el correo al owner del producto eliminado
+        await transporter.sendMail({
+            from: 'nahuelvillaverdeoficial@gmail.com',
+            to: product.owner,
+            subject: 'Producto Eliminado',
+            text: `Hola, tu producto "${product.titulo}" ha sido eliminado del sistema.`
+        });
 
         res.send({ status: "success", message: "Producto eliminado exitosamente" });
     } catch (error) {

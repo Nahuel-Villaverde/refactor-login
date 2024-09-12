@@ -230,3 +230,5 @@
 {"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-10T21:27:22.744Z"}
 {"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-12T22:02:45.683Z"}
 {"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-12T22:02:46.354Z"}
+{"level":"info","message":"Server is running on port 8080","timestamp":"2024-09-12T22:14:42.978Z"}
+{"level":"info","message":"Conectado a la base de datos","timestamp":"2024-09-12T22:14:43.719Z"}
