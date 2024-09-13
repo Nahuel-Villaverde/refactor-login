@@ -95,27 +95,125 @@ Para iniciar la aplicación en local, sigue estos pasos:
 
 ### Carritos
 
+Las rutas del archivo `carts.api.js` permiten crear, modificar y eliminar carritos, gestionar productos dentro de ellos, y procesar compras, verificando el stock y generando un ticket de compra que se envía al usuario. A continuación, se detallan las rutas disponibles:
+
 - **POST /api/carts/**
-  - **Descripción:** Crea un carrito nuevo.
+  Crea un carrito nuevo.
 
 - **GET /api/carts/:cid**
-  - **Descripción:** Obtiene un carrito por su ID.
+  Obtiene un carrito por su ID.
 
 - **POST /api/carts/:cid/products/:pid**
-  - **Descripción:** Agrega un producto al carrito especificado.
+  Agrega un producto al carrito especificado.
 
 - **DELETE /api/carts/:cid/products/:pid**
-  - **Descripción:** Elimina un producto del carrito especificado.
+  Elimina un producto del carrito especificado.
 
 - **PUT /api/carts/:cid/products/:pid**
-  - **Descripción:** Actualiza la cantidad de un producto en el carrito.
+  Actualiza la cantidad de un producto en el carrito.
 
 - **DELETE /api/carts/:cid**
-  - **Descripción:** Elimina el carrito especificado.
+  Elimina el carrito especificado.
 
 - **POST /api/carts/:cid/purchase**
-  - **Descripción:** Procesa la compra del carrito, verifica el stock, crea un ticket, envía un correo al usuario y limpia el carrito.
+  Procesa la compra del carrito, verifica el stock, crea un ticket, envía un correo al usuario y limpia el carrito.
 
+### Rutas de Productos
+
+Las rutas del archivo `products.api.js` manejan los productos de la tienda, permitiendo a los usuarios visualizar, crear, modificar y eliminar productos, así como aplicar filtros y paginación para una navegación más eficiente dentro de la lista de productos disponibles. A continuación, se detallan las rutas disponibles:
+
+- **GET /api/products/**  
+  Obtiene una lista de productos. Permite aplicar filtros por categoría, disponibilidad, ordenamiento por precio ascendente o descendente, y paginación para controlar la cantidad de resultados por página.
+
+- **GET /api/products/:id**  
+  Recupera los detalles de un producto específico utilizando su ID. 
+
+- **POST /api/products/**  
+  Crea un nuevo producto en la base de datos con los detalles proporcionados en el cuerpo de la solicitud, como título, descripción, precio, categoría, y más.
+
+- **PUT /api/products/:id**  
+  Actualiza la información de un producto existente identificado por su ID con los nuevos datos proporcionados.
+
+- **DELETE /api/products/:id**  
+  Elimina un producto específico de la base de datos por su ID y envía una notificación por correo electrónico al creador del producto para informarle sobre la eliminación.
+
+## **Rutas de Sesión**
+
+Las rutas del archivo `session.js` manejan el registro, inicio de sesión, autenticación con terceros y el restablecimiento de contraseñas. A continuación, se detallan las rutas disponibles:
+
+- **`POST /register`**  
+  Registra un nuevo usuario en el sistema.
+
+- **`GET /failregister`**  
+  Redirige a esta ruta en caso de que el registro falle.
+
+- **`POST /login`**  
+  Inicia sesión para un usuario existente. En caso de fallo, redirige a `/faillogin`.
+
+- **`GET /faillogin`**  
+  Muestra un mensaje de error cuando el inicio de sesión falla.
+
+- **`POST /logout`**  
+  Cierra la sesión del usuario actual y redirige a la página de inicio de sesión.
+
+- **`GET /github`**  
+  Inicia el proceso de autenticación con GitHub.
+
+- **`GET /githubcallback`**  
+  Ruta de retorno para GitHub, que autentica y redirige al usuario tras el inicio de sesión.
+
+- **`GET /google`**  
+  Inicia el proceso de autenticación con Google.
+
+- **`GET /google/callback`**  
+  Ruta de retorno para Google, que autentica y redirige al usuario tras el inicio de sesión.
+
+- **`GET /current`**  
+  Devuelve la información del usuario actualmente autenticado.
+
+- **`GET /forgot-password`**  
+  Muestra la vista para restablecer la contraseña.
+
+- **`POST /forgot-password`**  
+  Envía un correo electrónico con un enlace para restablecer la contraseña.
+
+- **`GET /reset/:token`**  
+  Muestra la vista para ingresar una nueva contraseña usando un token de restablecimiento.
+
+- **`POST /reset/:token`**  
+  Maneja la actualización de la contraseña usando un token válido.
+
+  ## **Rutas de Usuarios**
+
+Las rutas de `users.router.js` permiten gestionar usuarios, incluyendo roles, documentos, e imágenes. A continuación se detallan las rutas disponibles:
+
+- **`PUT /premium/:userId`**  
+  Cambia el rol del usuario a `admin` tras verificar los documentos requeridos, luego puede cambiar de `admin` a `user`
+
+- **`GET /:uid/documents`**  
+  Muestra la vista para subir documentos del usuario.
+
+- **`GET /`**  
+  Obtiene una lista de todos los usuarios registrados.
+
+- **`DELETE /`**  
+  Elimina usuarios inactivos y notifica por correo electrónico.
+
+- **`PUT /toggle-role/:userId`**  
+  Cambia el rol del usuario entre `user` y `admin` sin verificación de documentos.
+
+- **`DELETE /:userId`**  
+  Elimina un usuario específico por su ID.
+
+- **`POST /:uid/profile-image`**  
+  Sube y guarda una imagen de perfil del usuario.
+
+- **`POST /:uid/product-image`**  
+  Sube y guarda una imagen de producto asociada al usuario.
+
+- **`POST /:uid/document`**  
+  Sube y guarda un documento asociado al usuario.
+  
 ## Contacto
 
 Para cualquier pregunta, puedes contactarme en Nahuelvillaverdeoficial@gmail.com.
